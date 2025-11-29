@@ -5,7 +5,7 @@ ESTILO GENERAL:
 - Cards con sombras suaves, bordes redondeados y espaciado amplio.
 - Tipografía elegante y profesional.
 - Uso de TailwindCSS vía CDN o CSS puro.
-- HTML + JS vanilla (no React, no Vue, no frameworks SPA).
+
 
 SECCIONES DEL FRONTEND:
 
@@ -91,3 +91,4 @@ Ejemplo se input:
 
 
 Genera una factura para el cliente Acme Sac con RUC 12345678912. Los ítems son: 3 laptops a 1500 soles cada una y 2 teclados a 50 soles cada uno
+
