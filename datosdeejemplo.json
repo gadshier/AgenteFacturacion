@@ -1,0 +1,23 @@
+{
+    "status": "ok",
+    "factura": {
+        "cliente": "Una Factura Para Acme Sac",
+        "ruc": "12345678912",
+        "items": [
+            {
+                "descripcion": "laptops",
+                "cantidad": 3,
+                "precio": 1500.0,
+                "subtotal": 4500.0
+            },
+            {
+                "descripcion": "teclados",
+                "cantidad": 2,
+                "precio": 50.0,
+                "subtotal": 100.0
+            }
+        ],
+        "neto": 4600.0,
+        "igv": 828.0,
+        "total": 5428.0
+    },

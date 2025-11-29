@@ -1,0 +1,24 @@
+# 🧾 Agente de Facturación AI (Estilo SUNAT)
+
+> Un asistente inteligente que convierte lenguaje natural en borradores de facturas electrónicas, calculando IGV y estructurando datos automáticamente.
+
+## 📌 Descripción
+Este proyecto es una prueba de concepto (MVP) desarrollada para el reto de programación. Utiliza Inteligencia Artificial Generativa (OpenAI) para interpretar pedidos escritos en lenguaje natural (ej: correos, mensajes de WhatsApp) y los transforma en una estructura JSON válida, calculando impuestos (IGV 18%) y generando una vista previa lista para imprimir.
+
+## 🚀 Características
+* **NLP avanzado:** Entiende pedidos complejos con múltiples ítems.
+* **Lógica de Negocio:** Separa la extracción (IA) del cálculo matemático (Python) para evitar errores.
+* **Validación:** Detecta si el RUC tiene 11 dígitos.
+* **Exportación:** Genera JSON estructurado y vistas previas en HTML.
+* **Interfaz:** UI limpia y amigable.
+
+
+## 📋 Estructura del Proyecto
+* App.jsx: frontend usando vite y react.
+* Librerías necesarias.
+* Ejemplos de inputs y outputs.
+
+## ⚖️ Aviso Legal
+Este software utiliza datos ficticios. Los cálculos de IGV son referenciales y no tienen conexión real con los servicios de SUNAT.
+
+Desarrollado por grupo 3 para el Hackathon 2025.
