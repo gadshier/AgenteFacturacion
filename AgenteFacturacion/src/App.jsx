@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import './App.css'
 
 const simulatedResponse = {
@@ -26,12 +26,70 @@ const formatCurrency = (value) =>
 function App() {
   const [prompt, setPrompt] = useState('genera una factura a ACME por 3 laptops a 1500 y 2 teclados a 50')
   const [response, setResponse] = useState(null)
+  const invoiceRef = useRef(null)
 
   const handleSend = () => {
     setResponse(simulatedResponse)
   }
 
+  const handleExportJSON = () => {
+    if (!response) return
+
+    const blob = new Blob([JSON.stringify(response, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'factura.json'
+    link.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const handleExportHTML = () => {
+    if (!response || !invoiceRef.current) return
+
+    const htmlBlob = new Blob([invoiceRef.current.innerHTML], { type: 'text/html' })
+    const url = URL.createObjectURL(htmlBlob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'factura.html'
+    link.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const handleExportPDF = () => {
+    if (!response || !invoiceRef.current) return
+
+    const invoiceContent = invoiceRef.current.innerHTML
+    const printWindow = window.open('', '_blank', 'width=900,height=1100')
+
+    if (!printWindow) return
+
+    const styles = `
+      <style>
+        body { font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; padding: 24px; background: #f5f5f5; }
+        .invoice-card { max-width: 820px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 18px; padding: 24px; background: #ffffff; }
+        .invoice-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .badge { background: #e0f2fe; color: #0369a1; padding: 6px 10px; border-radius: 999px; font-weight: 700; font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; }
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        th, td { text-align: left; padding: 12px 10px; border-bottom: 1px solid #e5e7eb; font-size: 14px; }
+        th { background: #f8fafc; color: #475569; font-weight: 700; }
+        .summary { margin-top: 16px; width: 320px; margin-left: auto; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; }
+        .summary-row { display: flex; justify-content: space-between; font-weight: 700; padding: 8px 0; }
+        .summary-row + .summary-row { border-top: 1px dashed #e5e7eb; }
+      </style>
+    `
+
+    printWindow.document.write(`<!doctype html><html><head><title>Factura</title>${styles}</head><body>${invoiceContent}</body></html>`)
+    printWindow.document.close()
+    printWindow.focus()
+    setTimeout(() => {
+      printWindow.print()
+      printWindow.close()
+    }, 200)
+  }
+
   const invoice = useMemo(() => response?.factura ?? null, [response])
+  const hasResponse = Boolean(response)
 
   return (
     <div className="app">
@@ -76,13 +134,25 @@ function App() {
               <h2>Vista previa del JSON</h2>
             </div>
             <div className="actions">
-              <button type="button">Exportar JSON</button>
-              <button type="button">Exportar HTML</button>
-              <button type="button">Exportar PDF</button>
+              <button type="button" disabled={!hasResponse} onClick={handleExportJSON}>
+                Exportar JSON
+              </button>
+              <button type="button" disabled={!hasResponse} onClick={handleExportHTML}>
+                Exportar HTML
+              </button>
+              <button type="button" className="primary" disabled={!hasResponse} onClick={handleExportPDF}>
+                Exportar PDF
+              </button>
             </div>
           </div>
           <div className="code-block">
-            <pre>{JSON.stringify(response ?? simulatedResponse, null, 2)}</pre>
+            {hasResponse ? (
+              <pre>{JSON.stringify(response, null, 2)}</pre>
+            ) : (
+              <div className="empty-preview">
+                <p>Envía un prompt para ver la respuesta formateada aquí.</p>
+              </div>
+            )}
           </div>
         </section>
 
@@ -96,7 +166,8 @@ function App() {
           </div>
 
           {invoice ? (
-            <div className="invoice-card">
+            <div className="invoice-card" ref={invoiceRef}>
+              <div className="invoice-ribbon" aria-hidden>Factura electrónica</div>
               <div className="invoice-meta">
                 <div>
                   <p className="label">Cliente</p>
@@ -106,6 +177,7 @@ function App() {
                   <p className="label">RUC</p>
                   <p className="value">{invoice.ruc}</p>
                 </div>
+                <div className="stamp">SUNAT</div>
               </div>
 
               <table className="invoice-table">
