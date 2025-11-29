@@ -4,6 +4,31 @@ import './App.css'
 const BACKEND_URL =
   import.meta.env.VITE_BACKEND_URL || 'http://<TU-EC2-IP>:8080/facturar'
 
+const MOCK_RESPONSE = {
+  status: 'ok',
+  factura: {
+    cliente: 'Una Factura Para Acme Sac',
+    ruc: '12345678912',
+    items: [
+      {
+        descripcion: 'laptops',
+        cantidad: 3,
+        precio: 1500.0,
+        subtotal: 4500.0
+      },
+      {
+        descripcion: 'teclados',
+        cantidad: 2,
+        precio: 50.0,
+        subtotal: 100.0
+      }
+    ],
+    neto: 4600.0,
+    igv: 828.0,
+    total: 5428.0
+  }
+}
+
 function App() {
   const [prompt, setPrompt] = useState('')
   const [loading, setLoading] = useState(false)
@@ -14,29 +39,18 @@ function App() {
     setError('')
     setInvoice(null)
 
-    const payload = { prompt }
+    setLoading(true)
 
-    try {
-      setLoading(true)
-      const response = await fetch(BACKEND_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      })
-
-      if (!response.ok) {
-        throw new Error('No se pudo obtener respuesta del backend')
+    // Simulación temporal mientras el backend está en preparación.
+    setTimeout(() => {
+      try {
+        recibirRespuesta(MOCK_RESPONSE)
+      } catch (err) {
+        setError(err.message || 'Error inesperado')
+      } finally {
+        setLoading(false)
       }
-
-      const data = await response.json()
-      recibirRespuesta(data)
-    } catch (err) {
-      setError(err.message || 'Error inesperado')
-    } finally {
-      setLoading(false)
-    }
+    }, 500)
   }
 
   const recibirRespuesta = (data) => {
