@@ -132,99 +132,141 @@ function App() {
 
   return (
     <div className="page">
-      <header className="header">
-        <div>
-          <p className="eyebrow">Agente de Facturación</p>
-          <h1>Genera tu factura a partir de un prompt</h1>
-          <p className="subtitle">
-            Envía el detalle como texto, espera la respuesta del backend y descarga el PDF.
-          </p>
+      <header className="hero">
+        <div className="hero-text">
+          <p className="tag">Agente de Facturación</p>
+          <h1>Agente de Facturación – MVP</h1>
+          <p className="subtitle">Generador de facturas desde lenguaje natural.</p>
+          <div className="hero-grid">
+            <div className="pill">Flujo guiado de prompt & API</div>
+            <div className="pill light">Salida lista para PDF</div>
+          </div>
         </div>
-        <div className="badge">Vite + React</div>
+        <div className="hero-card">
+          <p className="label">Endpoint activo</p>
+          <p className="url">{BACKEND_URL}</p>
+          <p className="hint">Sustituye &lt;TU-EC2-IP&gt; por tu host.</p>
+        </div>
       </header>
 
-      <section className="panel">
-        <div className="field-group">
-          <label htmlFor="prompt">Prompt</label>
-          <textarea
-            id="prompt"
-            name="prompt"
-            placeholder="Escribe aquí las instrucciones para generar la factura"
-            value={prompt}
-            onChange={(event) => setPrompt(event.target.value)}
-          />
-        </div>
-
-        <div className="actions">
-          <button
-            className="primary"
-            onClick={enviarPrompt}
-            disabled={!prompt.trim() || loading}
-          >
-            {loading ? 'Enviando...' : 'Enviar al backend'}
-          </button>
-          <p className="hint">
-            La solicitud se envía a <span className="code">{BACKEND_URL}</span>
-          </p>
-        </div>
-
-        {error && <div className="alert">{error}</div>}
-      </section>
-
-      {invoice && (
-        <section className="panel">
-          <div className="panel-header">
+      <main className="layout">
+        <section className="card form-card">
+          <div className="section-head">
             <div>
-              <p className="eyebrow">Respuesta del backend</p>
-              <h2>{invoice.cliente}</h2>
-              <p className="meta">RUC: {invoice.ruc}</p>
+              <p className="eyebrow">Prompt</p>
+              <h2>Describe la factura</h2>
+              <p className="description">
+                Redacta el detalle en lenguaje natural. Enviamos el JSON al backend y
+                mostramos la respuesta tal cual llega.
+              </p>
             </div>
-            <button className="secondary" onClick={handleGeneratePdf}>
-              Descargar PDF
+            <div className="badge muted">Paso 1</div>
+          </div>
+
+          <div className="field-group">
+            <label htmlFor="prompt">Instrucciones</label>
+            <textarea
+              id="prompt"
+              name="prompt"
+              placeholder="Ejemplo: Crear factura para Acme SAC con 3 laptops a 1500 y 2 teclados a 50..."
+              value={prompt}
+              onChange={(event) => setPrompt(event.target.value)}
+            />
+          </div>
+
+          <div className="actions">
+            <button
+              className="primary"
+              onClick={enviarPrompt}
+              disabled={!prompt.trim() || loading}
+            >
+              {loading ? 'Enviando...' : 'Enviar al backend'}
             </button>
+            <p className="hint">
+              Recibirás exactamente el JSON retornado por el servicio.
+            </p>
           </div>
 
-          <div className="table-wrapper">
-            <table>
-              <thead>
-                <tr>
-                  <th>Descripción</th>
-                  <th>Cantidad</th>
-                  <th>Precio</th>
-                  <th>Subtotal</th>
-                </tr>
-              </thead>
-              <tbody>
-                {invoice.items?.map((item, index) => (
-                  <tr key={`${item.descripcion}-${index}`}>
-                    <td>{item.descripcion}</td>
-                    <td className="number">{item.cantidad}</td>
-                    <td className="number">{item.precio.toFixed(2)}</td>
-                    <td className="number">{item.subtotal.toFixed(2)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          {error && <div className="alert">{error}</div>}
+        </section>
+
+        <section className="card response-card">
+          <div className="section-head">
+            <div>
+              <p className="eyebrow">Salida</p>
+              <h2>Factura generada</h2>
+              <p className="description">
+                Visualiza la estructura devuelta por el backend y descárgala en PDF.
+              </p>
+            </div>
+            <div className="badge muted">Paso 2</div>
           </div>
 
-          {totals && (
-            <div className="totals">
-              <div>
-                <span>Neto</span>
-                <strong>{totals.neto.toFixed(2)}</strong>
-              </div>
-              <div>
-                <span>IGV</span>
-                <strong>{totals.igv.toFixed(2)}</strong>
-              </div>
-              <div>
-                <span>Total</span>
-                <strong>{totals.total.toFixed(2)}</strong>
-              </div>
+          {!invoice && (
+            <div className="empty">
+              <p className="empty-title">Aún no hay datos</p>
+              <p className="empty-text">
+                Envía un prompt para previsualizar la factura y habilitar la descarga.
+              </p>
             </div>
           )}
+
+          {invoice && (
+            <>
+              <div className="panel-header">
+                <div>
+                  <p className="eyebrow">Respuesta del backend</p>
+                  <h3>{invoice.cliente}</h3>
+                  <p className="meta">RUC: {invoice.ruc}</p>
+                </div>
+                <button className="secondary" onClick={handleGeneratePdf}>
+                  Descargar PDF
+                </button>
+              </div>
+
+              <div className="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Descripción</th>
+                      <th>Cantidad</th>
+                      <th>Precio</th>
+                      <th>Subtotal</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {invoice.items?.map((item, index) => (
+                      <tr key={`${item.descripcion}-${index}`}>
+                        <td>{item.descripcion}</td>
+                        <td className="number">{item.cantidad}</td>
+                        <td className="number">{item.precio.toFixed(2)}</td>
+                        <td className="number">{item.subtotal.toFixed(2)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {totals && (
+                <div className="totals">
+                  <div>
+                    <span>Neto</span>
+                    <strong>{totals.neto.toFixed(2)}</strong>
+                  </div>
+                  <div>
+                    <span>IGV</span>
+                    <strong>{totals.igv.toFixed(2)}</strong>
+                  </div>
+                  <div>
+                    <span>Total</span>
+                    <strong>{totals.total.toFixed(2)}</strong>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
         </section>
-      )}
+      </main>
     </div>
   )
 }
