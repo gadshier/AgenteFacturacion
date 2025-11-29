@@ -1,0 +1,93 @@
+Eres un desarrollador frontend experto en diseño visual moderno, UI/UX, layouts responsive y estilos elegantes. Tu tarea es crear un frontend COMPLETO, visualmente atractivo y profesional, para un sistema de facturación estilo SUNAT. NO debes implementar backend ni lógica interna; solamente la interfaz.
+
+ESTILO GENERAL:
+- Diseño moderno tipo dashboard SaaS premium.
+- Cards con sombras suaves, bordes redondeados y espaciado amplio.
+- Tipografía elegante y profesional.
+- Uso de TailwindCSS vía CDN o CSS puro.
+- HTML + JS vanilla (no React, no Vue, no frameworks SPA).
+
+SECCIONES DEL FRONTEND:
+
+1. HEADER / NAVBAR
+   - Estilo minimalista.
+   - Título: “Agente de Facturación – MVP”.
+   - Subtítulo opcional: “Generador de facturas desde lenguaje natural”.
+
+2. MÓDULO DE ENTRADA DEL USUARIO
+   - Card elegante.
+   - Un textarea grande para que el usuario escriba un prompt.
+   - Placeholder atractivo: “Ejemplo: genera una factura a ACME por 3 laptops a 1500 y 2 teclados a 50”.
+   - Botón grande y moderno: “Generar Factura”.
+   - El botón NO debe procesar nada ni llamar al backend; solo debe dejar listo el flujo para integración.
+
+3. SECCIÓN DE JSON DE RESPUESTA
+   - Card tipo “code viewer”.
+   - Fondo gris claro u oscuro suave.
+   - Tipografía monoespaciada (estilo editor de código).
+   - Debe mostrar el JSON que el backend devolverá, por ejemplo:
+     {
+       "status": "ok",
+       "factura": {
+         "cliente": "ACME S.A.",
+         "ruc": "12345678901",
+         "items": [
+           { "descripcion": "Laptop", "cantidad": 3, "precio": 1500, "subtotal": 4500 },
+           { "descripcion": "Teclado", "cantidad": 2, "precio": 50, "subtotal": 100 }
+         ],
+         "neto": 4600,
+         "igv": 828,
+         "total": 5428
+       }
+     }
+
+4. VISTA PREVIA DE FACTURA
+   - Card elegante estilo SUNAT moderno.
+   - Debe mostrar:
+     - Cliente
+     - RUC
+     - Tabla de ítems (descripción, cantidad, precio, subtotal)
+     - Neto, IGV y Total
+   - Diseño profesional e imprimible.
+
+5. BOTONES DE EXPORTACIÓN (solo UI, sin lógica real)
+   - Exportar JSON
+   - Exportar HTML
+   - Exportar PDF
+   - Estilo consistente con el diseño general.
+
+FUNCIONALIDAD (PREPARACIÓN PARA INTEGRACIÓN):
+- El botón "Generar Factura" solo debe capturar el texto del textarea.
+- Debe crearse una función enviarPrompt() que genere un JSON así:
+  { "prompt": "<texto ingresado>" }
+- NO enviar al backend aún; solo dejar un comentario TODO.
+- Crear una función recibirRespuesta(json) lista para recibir el JSON del backend.
+- Ese JSON se mostrará en la sección de código y renderizará la factura.
+
+RESTRICCIONES:
+- No implementar lógica de negocio.
+- No procesar lenguaje natural.
+- No inventar datos.
+
+- Solo construir el frontend visual y la estructura para futura integración.
+
+ENTREGA ESPERADA:
+- Un archivo HTML funcional (o HTML + CSS + JS).
+- Diseño moderno, limpio, atractivo y profesional.
+- Todo listo para copiar/pegar y conectar después con el backend en EC2.
+
+
+Prompt de generación de pdf.
+
+quiero que el pdf se genere asi, ademas, quiero tener control de donde guardar el pdf, ademas recuerda que los datos que con los que se enviaran seran datos que llegaran y cambiaran, primero quiero probar con datos estaticos
+------------------------------------------------------------------------------------------------------------------
+{ "status": "ok", "factura": { "cliente": "ACME S.A.", "ruc": "12345678901", "items": [ { "descripcion": "Laptop", "cantidad": 3, "precio": 1500, "subtotal": 4500 }, { "descripcion": "Teclado", "cantidad": 2, "precio": 50, "subtotal": 100 } ], "neto": 4600, "igv": 828, "total": 5428 }, }---el json es ese, dame el code para que maneje esa estructura
+------------------------------------------------------------------------------------------------------------------
+quiero crear un backend que cree un file system donde esten los pdfs, en ese caso quiero tenerlos en formato hash para poder enviarlas al la pagina web que estara tambien dentro de ese backend, explicame primero todo el proceso como se rharia , las etapas, y luego dame el code que seria necesario usar
+_-----------------------------------------------------------------------------------------------------------------------
+
+
+Ejemplo se input:
+
+
+Genera una factura para el cliente Acme Sac con RUC 12345678912. Los ítems son: 3 laptops a 1500 soles cada una y 2 teclados a 50 soles cada uno
